@@ -2,13 +2,15 @@
 class User {
   String nome;
   String matricula;
-  String dataNascimento;
+  String turma;
+  String turno;
   String tipoUsuario;
 
   User({
     required this.nome,
     required this.matricula,
-    required this.dataNascimento,
+    required this.turma,
+    required this.turno,
     required this.tipoUsuario,
   });
 }

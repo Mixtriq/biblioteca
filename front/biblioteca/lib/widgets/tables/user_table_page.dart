@@ -1,11 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
-import 'dart:convert';
 
 import 'package:biblioteca/tabela/user_data.dart';
 import 'package:biblioteca/tabela/user_model.dart';
 import 'package:biblioteca/utils/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 class UserTablePage extends StatefulWidget {
   const UserTablePage({super.key});
@@ -32,34 +30,16 @@ class UserTablePageState extends State<UserTablePage> {
     // Seleciona os usuários que serão exibidos na página atual
     List<User> paginatedUsers = users.sublist(startIndex, endIndex);
 
-    // Lógica para definir os botões de página (máximo 5 botões)
-    int startPage = currentPage - 2 < 1 ? 1 : currentPage - 2;
-    int endPage = startPage + 4 > totalPages ? totalPages : startPage + 4;
-    if (endPage - startPage < 4 && startPage > 1) {
-      startPage = endPage - 4 < 1 ? 1 : endPage - 4;
+    // Lógica para definir os botões de página (máximo 10 botões)
+    int startPage = currentPage - 4 < 1 ? 1 : currentPage - 4;
+    int endPage = startPage + 8 > totalPages ? totalPages : startPage + 8;
+    if (endPage - startPage < 8 && startPage > 1) {
+      startPage = endPage - 8 < 1 ? 1 : endPage - 8;
     }
-
-    //Pegar usuarios
-    var url = Uri.http('localhost:9090', '/usuario');
-
-    http
-        .post(url,
-            body: jsonEncode({
-              "IdDaSessao": 6070095939566893115,
-              "LoginDoUsuarioRequerente": "admin",
-              "TextoDeBusca": "a"
-            }))
-        .then((response) {
-      var responseLogin = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && responseLogin['Aceito']) {
-      } else if (response.statusCode == 200 && !responseLogin['Aceito']) {}
-    }).catchError((err) {
-      print('Ops! Ocorreu um erro ao tentar realizar o Login');
-    });
 
     return SingleChildScrollView(
       child: Column(
+        // Botão novo usuário
         children: [
           Row(
             children: [
@@ -71,19 +51,19 @@ class UserTablePageState extends State<UserTablePage> {
                   'Novo Usuário',
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 style: ButtonStyle(
                   backgroundColor:
                       WidgetStatePropertyAll(Colors.green.shade800),
-                  foregroundColor: WidgetStatePropertyAll(Colors.white),
-                  padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.all(15.0), // Padding personalizado
+                  foregroundColor: const WidgetStatePropertyAll(Colors.white),
+                  padding: WidgetStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.all(15.0), // Padding personalizado
                   ),
                 ),
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20.0,
           ),
           Padding(
@@ -111,16 +91,15 @@ class UserTablePageState extends State<UserTablePage> {
             ),
           ),
           Table(
-            border: TableBorder.all(),
+            border: TableBorder.all(
+                color: const Color.fromARGB(255, 213, 213, 213)),
             columnWidths: const {
-              0: FixedColumnWidth(150), // Largura fixa para a coluna "Nome"
-              1: FixedColumnWidth(
-                  130), // Largura fixa para a coluna "Matricula"
-              2: FixedColumnWidth(
-                  180), // Largura fixa para a coluna "Data de Nascimento"
-              3: FixedColumnWidth(
-                  150), // Largura fixa para a coluna "Tipo de Usuario"
-              4: FixedColumnWidth(280), // Largura fixa para a coluna "Opções"
+              0: FlexColumnWidth(0.33),
+              1: FlexColumnWidth(0.20),
+              2: FlexColumnWidth(0.15),
+              3: FlexColumnWidth(0.15),
+              4: FlexColumnWidth(0.17),
+              5: IntrinsicColumnWidth(),
             },
             children: [
               // Cabeçalho da tabela
@@ -132,12 +111,15 @@ class UserTablePageState extends State<UserTablePage> {
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('Matrícula', textAlign: TextAlign.left),
+                    child: Text('R.A / Matrícula', textAlign: TextAlign.left),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
-                    child:
-                        Text('Data de Nascimento', textAlign: TextAlign.left),
+                    child: Text('Turma', textAlign: TextAlign.left),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Turno', textAlign: TextAlign.left),
                   ),
                   Padding(
                     padding: EdgeInsets.all(8.0),
@@ -154,26 +136,28 @@ class UserTablePageState extends State<UserTablePage> {
                 TableRow(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(user.nome, textAlign: TextAlign.left),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(user.matricula, textAlign: TextAlign.left),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child:
-                          Text(user.dataNascimento, textAlign: TextAlign.left),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(user.turma, textAlign: TextAlign.left),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(user.turno, textAlign: TextAlign.left),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(user.tipoUsuario, textAlign: TextAlign.left),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(5.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           ElevatedButton(
                             onPressed: () {},
@@ -190,7 +174,7 @@ class UserTablePageState extends State<UserTablePage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(Icons.delete, color: Colors.white),
-                                  SizedBox(width: 8),
+                                  SizedBox(width: 4),
                                   Text('Excluir',
                                       style: TextStyle(
                                         fontSize: 16,
@@ -198,7 +182,7 @@ class UserTablePageState extends State<UserTablePage> {
                                       )),
                                 ]),
                           ),
-                          const SizedBox(width: 5),
+                          const SizedBox(width: 3),
                           ElevatedButton(
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
@@ -214,9 +198,9 @@ class UserTablePageState extends State<UserTablePage> {
                             child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.search, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text('Vizualizar',
+                                  Icon(Icons.note, color: Colors.white),
+                                  SizedBox(width: 4),
+                                  Text('Editar',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -234,7 +218,7 @@ class UserTablePageState extends State<UserTablePage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
                   icon: const Icon(Icons.chevron_left),
