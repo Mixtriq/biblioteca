@@ -1,4 +1,5 @@
 import 'package:biblioteca/screens/telas_testes.dart';
+import 'package:biblioteca/utils/routes.dart';
 import 'package:biblioteca/widgets/forms/form_usuario.dart';
 import 'package:biblioteca/widgets/tables/user_table_page.dart';
 import 'package:biblioteca/widgets/menu_navegacao.dart';
@@ -70,7 +71,7 @@ class _TelaPaginaIncialState extends State<TelaPaginaIncial> {
                     case '/nada_consta':
                       page = const NadaConsta();
                       break;
-                    case '/usuarios':
+                    case AppRoutes.usuarios:
                       page = const UserTablePage();
                       break;
                     case '/configuracoes':
